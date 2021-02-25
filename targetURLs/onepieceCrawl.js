@@ -24,7 +24,7 @@ async function onepieceCrawl() {
         )
 
         let datasetArray = Array.from(document.querySelectorAll('tbody > tr > td:first-of-type > button')).map(
-            (v) => String(v.dataset.title).match(/(<\/i> ).+?\)/g)
+            (v) => String(v.dataset.mateTitle).match(/(<\/i> ).+?\)/g)
         )
 
         return textArray.map((v, i) => {
