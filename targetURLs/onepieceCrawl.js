@@ -19,36 +19,25 @@ async function onepieceCrawl() {
     await page.setDefaultNavigationTimeout(0);
     await page.goto('https://ordsearch.net/mix/helper');
     const onepieceData = await page.evaluate(() => {
-        const textArray = Array.from(document.querySelectorAll('tbody > tr > td:first-of-type > button')).map(
+        let textArray = Array.from(document.querySelectorAll('tbody > tr > td:first-of-type > button')).map(
             (v) => v.textContent.replace(/\s{2,}/g,'')
         )
 
-        const datasetArray = Array.from(document.querySelectorAll('tbody > tr > td:first-of-type > button')).map(
-            (v) => v.dataset.title
+        let datasetArray = Array.from(document.querySelectorAll('tbody > tr > td:first-of-type > button')).map(
+            (v) => String(v.dataset.title).match(/(<\/i> ).+?\)/g)
         )
+
         return textArray.map((v, i) => {
           return [
             v,
-            datasetArray[i]
+              datasetArray[i]
           ]
         });
     });
-    // 가장빠른 프록시 찾기
-    // const filtered = onepieceData
-    //   .filter((v) => v.type.startsWith('HTTP'))
-    //   .sort((p, c) => p.latency - c.latency);
     await page.close();
     await browser.close();
-    // 프록시 변경
-    // browser = await puppeteer.launch({
-    //   headless: false,
-    //   args: [
-    //     '--window-size=1920,1080',
-    //     '--disable-notifications',
-    //     `--proxy-server=${filtered[0].ip}`,
-    //   ],
-    // });
-    return onepieceData;
+
+    return { onepieceData };
 }
 
 module.exports.onepieceCrawl = onepieceCrawl;
